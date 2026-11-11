@@ -1,9 +1,1004 @@
 <p>Packages:</p>
 <ul>
 <li>
+<a href="#sparkoperator.k8s.io%2fv1alpha1">sparkoperator.k8s.io/v1alpha1</a>
+</li>
+<li>
 <a href="#sparkoperator.k8s.io%2fv1beta2">sparkoperator.k8s.io/v1beta2</a>
 </li>
 </ul>
+<h2 id="sparkoperator.k8s.io/v1alpha1">sparkoperator.k8s.io/v1alpha1</h2>
+<div>
+<p>Package v1alpha1 is the v1alpha1 version of the API.</p>
+<p>SparkConnect uses the sparkoperator.k8s.io/v1alpha1 API. An alpha API can
+change in a future release.</p>
+</div>
+Resource Types:
+<ul><li>
+<a href="#sparkoperator.k8s.io/v1alpha1.SparkConnect">SparkConnect</a>
+</li></ul>
+<h3 id="sparkoperator.k8s.io/v1alpha1.SparkConnect">SparkConnect
+</h3>
+<div>
+<p>SparkConnect is the Schema for the sparkconnections API.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<code>apiVersion</code><br/>
+string</td>
+<td>
+<code>
+sparkoperator.k8s.io/v1alpha1
+</code>
+</td>
+</tr>
+<tr>
+<td>
+<code>kind</code><br/>
+string
+</td>
+<td><code>SparkConnect</code></td>
+</tr>
+<tr>
+<td>
+<code>metadata</code><br/>
+<em>
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#objectmeta-v1-meta">
+Kubernetes meta/v1.ObjectMeta
+</a>
+</em>
+</td>
+<td>
+Refer to the Kubernetes API documentation for the fields of the
+<code>metadata</code> field.
+</td>
+</tr>
+<tr>
+<td>
+<code>spec</code><br/>
+<em>
+<a href="#sparkoperator.k8s.io/v1alpha1.SparkConnectSpec">
+SparkConnectSpec
+</a>
+</em>
+</td>
+<td>
+<br/>
+<br/>
+<table>
+<tr>
+<td>
+<code>sparkVersion</code><br/>
+<em>
+string
+</em>
+</td>
+<td>
+<p>SparkVersion is the version of Spark the spark connect use.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>image</code><br/>
+<em>
+string
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>Image is the container image for the driver, executor, and init-container. Any custom container images for the
+driver, executor, or init-container takes precedence over this.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>hadoopConf</code><br/>
+<em>
+map[string]string
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>HadoopConf carries user-specified Hadoop configuration properties as they would use the &ldquo;&ndash;conf&rdquo; option
+in spark-submit. The SparkApplication controller automatically adds prefix &ldquo;spark.hadoop.&rdquo; to Hadoop
+configuration properties.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>sparkConf</code><br/>
+<em>
+map[string]string
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>SparkConf carries user-specified Spark configuration properties as they would use the &ldquo;&ndash;conf&rdquo; option in
+spark-submit.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>deps</code><br/>
+<em>
+<a href="#sparkoperator.k8s.io/v1alpha1.Dependencies">
+Dependencies
+</a>
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>Deps captures all possible types of dependencies of a Spark Connect server.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>server</code><br/>
+<em>
+<a href="#sparkoperator.k8s.io/v1alpha1.ServerSpec">
+ServerSpec
+</a>
+</em>
+</td>
+<td>
+<p>Server is the Spark connect server specification.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>executor</code><br/>
+<em>
+<a href="#sparkoperator.k8s.io/v1alpha1.ExecutorSpec">
+ExecutorSpec
+</a>
+</em>
+</td>
+<td>
+<p>Executor is the Spark executor specification.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>dynamicAllocation</code><br/>
+<em>
+<a href="#sparkoperator.k8s.io/v1alpha1.DynamicAllocation">
+DynamicAllocation
+</a>
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>DynamicAllocation configures dynamic allocation that becomes available for the Kubernetes
+scheduler backend since Spark 3.0.</p>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<code>status</code><br/>
+<em>
+<a href="#sparkoperator.k8s.io/v1alpha1.SparkConnectStatus">
+SparkConnectStatus
+</a>
+</em>
+</td>
+<td>
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sparkoperator.k8s.io/v1alpha1.Dependencies">Dependencies
+</h3>
+<p>
+(<em>Appears on:</em><a href="#sparkoperator.k8s.io/v1alpha1.SparkConnectSpec">SparkConnectSpec</a>)
+</p>
+<div>
+<p>Dependencies specifies the Maven dependencies of a Spark Connect server.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<code>jars</code><br/>
+<em>
+[]string
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>Jars is a list of JAR files the Spark Connect server depends on.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>packages</code><br/>
+<em>
+[]string
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>Packages is a list of maven coordinates of jars to include on the driver and executor
+classpaths. This will search the local maven repo, then maven central and any additional
+remote repositories given by the &ldquo;repositories&rdquo; option.
+Each package should be of the form &ldquo;groupId:artifactId:version&rdquo;.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>excludePackages</code><br/>
+<em>
+[]string
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>ExcludePackages is a list of &ldquo;groupId:artifactId&rdquo;, to exclude while resolving the
+dependencies provided in Packages to avoid dependency conflicts.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>repositories</code><br/>
+<em>
+[]string
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>Repositories is a list of additional remote repositories to search for the maven coordinate
+given with the &ldquo;packages&rdquo; option.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sparkoperator.k8s.io/v1alpha1.DeployMode">DeployMode
+(<code>string</code> alias)</h3>
+<div>
+<p>DeployMode describes the type of deployment of a Spark application.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr><td><p>&#34;client&#34;</p></td>
+<td></td>
+</tr><tr><td><p>&#34;cluster&#34;</p></td>
+<td></td>
+</tr></tbody>
+</table>
+<h3 id="sparkoperator.k8s.io/v1alpha1.DriverState">DriverState
+(<code>string</code> alias)</h3>
+<div>
+<p>DriverState tells the current state of a spark driver.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr><td><p>&#34;COMPLETED&#34;</p></td>
+<td></td>
+</tr><tr><td><p>&#34;FAILED&#34;</p></td>
+<td></td>
+</tr><tr><td><p>&#34;PENDING&#34;</p></td>
+<td></td>
+</tr><tr><td><p>&#34;RUNNING&#34;</p></td>
+<td></td>
+</tr><tr><td><p>&#34;UNKNOWN&#34;</p></td>
+<td></td>
+</tr></tbody>
+</table>
+<h3 id="sparkoperator.k8s.io/v1alpha1.DynamicAllocation">DynamicAllocation
+</h3>
+<p>
+(<em>Appears on:</em><a href="#sparkoperator.k8s.io/v1alpha1.SparkConnectSpec">SparkConnectSpec</a>)
+</p>
+<div>
+<p>DynamicAllocation contains configuration options for dynamic allocation.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<code>enabled</code><br/>
+<em>
+bool
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>Enabled controls whether dynamic allocation is enabled or not.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>initialExecutors</code><br/>
+<em>
+int32
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>InitialExecutors is the initial number of executors to request. If .spec.executor.instances
+is also set, the initial number of executors is set to the bigger of that and this option.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>minExecutors</code><br/>
+<em>
+int32
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>MinExecutors is the lower bound for the number of executors if dynamic allocation is enabled.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>maxExecutors</code><br/>
+<em>
+int32
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>MaxExecutors is the upper bound for the number of executors if dynamic allocation is enabled.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>shuffleTrackingEnabled</code><br/>
+<em>
+bool
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>ShuffleTrackingEnabled enables shuffle file tracking for executors, which allows dynamic allocation without
+the need for an external shuffle service. This option will try to keep alive executors that are storing
+shuffle data for active jobs. If external shuffle service is enabled, set ShuffleTrackingEnabled to false.
+ShuffleTrackingEnabled is true by default if dynamicAllocation.enabled is true.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>shuffleTrackingTimeout</code><br/>
+<em>
+int64
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>ShuffleTrackingTimeout controls the timeout in milliseconds for executors that are holding
+shuffle data if shuffle tracking is enabled (true by default if dynamic allocation is enabled).</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sparkoperator.k8s.io/v1alpha1.ExecutorSpec">ExecutorSpec
+</h3>
+<p>
+(<em>Appears on:</em><a href="#sparkoperator.k8s.io/v1alpha1.SparkConnectSpec">SparkConnectSpec</a>)
+</p>
+<div>
+<p>ExecutorSpec is specification of the executor.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<code>SparkPodSpec</code><br/>
+<em>
+<a href="#sparkoperator.k8s.io/v1alpha1.SparkPodSpec">
+SparkPodSpec
+</a>
+</em>
+</td>
+<td>
+<p>
+(Members of <code>SparkPodSpec</code> are embedded into this type.)
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>instances</code><br/>
+<em>
+int32
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>Instances is the number of executor instances.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sparkoperator.k8s.io/v1alpha1.ExecutorState">ExecutorState
+(<code>string</code> alias)</h3>
+<div>
+<p>ExecutorState tells the current state of an executor.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr><td><p>&#34;COMPLETED&#34;</p></td>
+<td></td>
+</tr><tr><td><p>&#34;FAILED&#34;</p></td>
+<td></td>
+</tr><tr><td><p>&#34;PENDING&#34;</p></td>
+<td></td>
+</tr><tr><td><p>&#34;RUNNING&#34;</p></td>
+<td></td>
+</tr><tr><td><p>&#34;UNKNOWN&#34;</p></td>
+<td></td>
+</tr></tbody>
+</table>
+<h3 id="sparkoperator.k8s.io/v1alpha1.GPUSpec">GPUSpec
+</h3>
+<p>
+(<em>Appears on:</em><a href="#sparkoperator.k8s.io/v1alpha1.SparkPodSpec">SparkPodSpec</a>)
+</p>
+<div>
+<p>GPUSpec defines the GPU resources requested for a Spark Connect server or executor pod.</p>
+<p>Name must be a Kubernetes extended resource name of the form
+&ldquo;<vendor-domain>/gpu&rdquo;, for example &ldquo;nvidia.com/gpu&rdquo; or &ldquo;amd.com/gpu&rdquo;.
+The vendor domain is passed to Spark as
+spark.{driver,executor}.resource.gpu.vendor, and the quantity as
+spark.{driver,executor}.resource.gpu.amount. GPU resource names whose
+suffix is not &ldquo;gpu&rdquo; (for example MIG profiles) are not supported by this
+field; configure them through the pod template and sparkConf instead.</p>
+<p>Setting a GPU does not configure GPU discovery. A discovery script or
+discovery plugin must be provided through sparkConf for Spark to start.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<code>name</code><br/>
+<em>
+string
+</em>
+</td>
+<td>
+<p>Name is the Kubernetes GPU resource name, such as nvidia.com/gpu or amd.com/gpu.
+The vendor domain is used for Spark&rsquo;s GPU resource vendor configuration.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>quantity</code><br/>
+<em>
+int64
+</em>
+</td>
+<td>
+<p>Quantity is the number of GPUs to request for each pod.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sparkoperator.k8s.io/v1alpha1.ServerSpec">ServerSpec
+</h3>
+<p>
+(<em>Appears on:</em><a href="#sparkoperator.k8s.io/v1alpha1.SparkConnectSpec">SparkConnectSpec</a>)
+</p>
+<div>
+<p>ServerSpec is specification of the Spark connect server.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<code>SparkPodSpec</code><br/>
+<em>
+<a href="#sparkoperator.k8s.io/v1alpha1.SparkPodSpec">
+SparkPodSpec
+</a>
+</em>
+</td>
+<td>
+<p>
+(Members of <code>SparkPodSpec</code> are embedded into this type.)
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>service</code><br/>
+<em>
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#service-v1-core">
+Kubernetes core/v1.Service
+</a>
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>Service exposes the Spark connect server.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sparkoperator.k8s.io/v1alpha1.SparkConnectConditionReason">SparkConnectConditionReason
+(<code>string</code> alias)</h3>
+<div>
+<p>SparkConnectConditionReason represents the reason of SparkConnect conditions.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr><td><p>&#34;ServerPodNotReady&#34;</p></td>
+<td></td>
+</tr><tr><td><p>&#34;ServerPodReady&#34;</p></td>
+<td></td>
+</tr></tbody>
+</table>
+<h3 id="sparkoperator.k8s.io/v1alpha1.SparkConnectConditionType">SparkConnectConditionType
+(<code>string</code> alias)</h3>
+<div>
+<p>SparkConnectConditionType represents the condition types of the SparkConnect.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr><td><p>&#34;ServerPodReady&#34;</p></td>
+<td></td>
+</tr></tbody>
+</table>
+<h3 id="sparkoperator.k8s.io/v1alpha1.SparkConnectServerStatus">SparkConnectServerStatus
+</h3>
+<p>
+(<em>Appears on:</em><a href="#sparkoperator.k8s.io/v1alpha1.SparkConnectStatus">SparkConnectStatus</a>)
+</p>
+<div>
+</div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<code>podName</code><br/>
+<em>
+string
+</em>
+</td>
+<td>
+<p>PodName is the name of the pod that is running the Spark Connect server.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>podIp</code><br/>
+<em>
+string
+</em>
+</td>
+<td>
+<p>PodIP is the IP address of the pod that is running the Spark Connect server.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>serviceName</code><br/>
+<em>
+string
+</em>
+</td>
+<td>
+<p>ServiceName is the name of the service that is exposing the Spark Connect server.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sparkoperator.k8s.io/v1alpha1.SparkConnectSpec">SparkConnectSpec
+</h3>
+<p>
+(<em>Appears on:</em><a href="#sparkoperator.k8s.io/v1alpha1.SparkConnect">SparkConnect</a>)
+</p>
+<div>
+<p>SparkConnectSpec defines the desired state of SparkConnect.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<code>sparkVersion</code><br/>
+<em>
+string
+</em>
+</td>
+<td>
+<p>SparkVersion is the version of Spark the spark connect use.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>image</code><br/>
+<em>
+string
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>Image is the container image for the driver, executor, and init-container. Any custom container images for the
+driver, executor, or init-container takes precedence over this.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>hadoopConf</code><br/>
+<em>
+map[string]string
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>HadoopConf carries user-specified Hadoop configuration properties as they would use the &ldquo;&ndash;conf&rdquo; option
+in spark-submit. The SparkApplication controller automatically adds prefix &ldquo;spark.hadoop.&rdquo; to Hadoop
+configuration properties.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>sparkConf</code><br/>
+<em>
+map[string]string
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>SparkConf carries user-specified Spark configuration properties as they would use the &ldquo;&ndash;conf&rdquo; option in
+spark-submit.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>deps</code><br/>
+<em>
+<a href="#sparkoperator.k8s.io/v1alpha1.Dependencies">
+Dependencies
+</a>
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>Deps captures all possible types of dependencies of a Spark Connect server.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>server</code><br/>
+<em>
+<a href="#sparkoperator.k8s.io/v1alpha1.ServerSpec">
+ServerSpec
+</a>
+</em>
+</td>
+<td>
+<p>Server is the Spark connect server specification.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>executor</code><br/>
+<em>
+<a href="#sparkoperator.k8s.io/v1alpha1.ExecutorSpec">
+ExecutorSpec
+</a>
+</em>
+</td>
+<td>
+<p>Executor is the Spark executor specification.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>dynamicAllocation</code><br/>
+<em>
+<a href="#sparkoperator.k8s.io/v1alpha1.DynamicAllocation">
+DynamicAllocation
+</a>
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>DynamicAllocation configures dynamic allocation that becomes available for the Kubernetes
+scheduler backend since Spark 3.0.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sparkoperator.k8s.io/v1alpha1.SparkConnectState">SparkConnectState
+(<code>string</code> alias)</h3>
+<p>
+(<em>Appears on:</em><a href="#sparkoperator.k8s.io/v1alpha1.SparkConnectStatus">SparkConnectStatus</a>)
+</p>
+<div>
+<p>SparkConnectState represents the current state of the SparkConnect.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr><td><p>&#34;Failed&#34;</p></td>
+<td></td>
+</tr><tr><td><p>&#34;&#34;</p></td>
+<td></td>
+</tr><tr><td><p>&#34;NotReady&#34;</p></td>
+<td></td>
+</tr><tr><td><p>&#34;Provisioning&#34;</p></td>
+<td></td>
+</tr><tr><td><p>&#34;Ready&#34;</p></td>
+<td></td>
+</tr></tbody>
+</table>
+<h3 id="sparkoperator.k8s.io/v1alpha1.SparkConnectStatus">SparkConnectStatus
+</h3>
+<p>
+(<em>Appears on:</em><a href="#sparkoperator.k8s.io/v1alpha1.SparkConnect">SparkConnect</a>)
+</p>
+<div>
+<p>SparkConnectStatus defines the observed state of SparkConnect.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<code>conditions</code><br/>
+<em>
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#condition-v1-meta">
+[]Kubernetes meta/v1.Condition
+</a>
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>Represents the latest available observations of a SparkConnect&rsquo;s current state.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>state</code><br/>
+<em>
+<a href="#sparkoperator.k8s.io/v1alpha1.SparkConnectState">
+SparkConnectState
+</a>
+</em>
+</td>
+<td>
+<p>State represents the current state of the SparkConnect.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>server</code><br/>
+<em>
+<a href="#sparkoperator.k8s.io/v1alpha1.SparkConnectServerStatus">
+SparkConnectServerStatus
+</a>
+</em>
+</td>
+<td>
+<p>Server represents the current state of the SparkConnect server.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>executors</code><br/>
+<em>
+map[string]int
+</em>
+</td>
+<td>
+<p>Executors represents the current state of the SparkConnect executors.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>startTime</code><br/>
+<em>
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#time-v1-meta">
+Kubernetes meta/v1.Time
+</a>
+</em>
+</td>
+<td>
+<p>StartTime is the time at which the SparkConnect controller started processing the SparkConnect.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>lastUpdateTime</code><br/>
+<em>
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#time-v1-meta">
+Kubernetes meta/v1.Time
+</a>
+</em>
+</td>
+<td>
+<p>LastUpdateTime is the time at which the SparkConnect controller last updated the SparkConnect.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sparkoperator.k8s.io/v1alpha1.SparkPodSpec">SparkPodSpec
+</h3>
+<p>
+(<em>Appears on:</em><a href="#sparkoperator.k8s.io/v1alpha1.ExecutorSpec">ExecutorSpec</a>, <a href="#sparkoperator.k8s.io/v1alpha1.ServerSpec">ServerSpec</a>)
+</p>
+<div>
+<p>SparkPodSpec defines common things that can be customized for a Spark driver or executor pod.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<code>cores</code><br/>
+<em>
+int32
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>Cores is a shorthand for coreRequest on the server, and maps to <code>spark.executor.cores</code> for executors.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>coreRequest</code><br/>
+<em>
+k8s.io/apimachinery/pkg/api/resource.Quantity
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>CoreRequest is the physical CPU core request for the pod.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>coreLimit</code><br/>
+<em>
+k8s.io/apimachinery/pkg/api/resource.Quantity
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>CoreLimit is the physical CPU core limit for the pod.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>memory</code><br/>
+<em>
+string
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>Memory is the amount of memory to request for the pod.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>gpu</code><br/>
+<em>
+<a href="#sparkoperator.k8s.io/v1alpha1.GPUSpec">
+GPUSpec
+</a>
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>GPU specifies GPU resources for the pod and Spark resource scheduler.
+GPU discovery and per-task resource settings are configured through SparkConf.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>template</code><br/>
+<em>
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#podtemplatespec-v1-core">
+Kubernetes core/v1.PodTemplateSpec
+</a>
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>Template is a pod template that can be used to define the driver or executor pod configurations that Spark configurations do not support.
+Spark version &gt;= 3.0.0 is required.
+Ref: <a href="https://spark.apache.org/docs/latest/running-on-kubernetes.html#pod-template">https://spark.apache.org/docs/latest/running-on-kubernetes.html#pod-template</a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<hr/>
 <h2 id="sparkoperator.k8s.io/v1beta2">sparkoperator.k8s.io/v1beta2</h2>
 <div>
 <p>Package v1beta2 is the v1beta2 version of the API.</p>
@@ -17,6 +1012,7 @@ Resource Types:
 <h3 id="sparkoperator.k8s.io/v1beta2.ScheduledSparkApplication">ScheduledSparkApplication
 </h3>
 <div>
+<p>ScheduledSparkApplication is the Schema for the scheduledsparkapplications API.</p>
 </div>
 <table>
 <thead>
@@ -47,7 +1043,7 @@ string
 <td>
 <code>metadata</code><br/>
 <em>
-<a href="https://v1-18.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#objectmeta-v1-meta">
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#objectmeta-v1-meta">
 Kubernetes meta/v1.ObjectMeta
 </a>
 </em>
@@ -79,6 +1075,21 @@ string
 </td>
 <td>
 <p>Schedule is a cron schedule on which the application should run.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>timeZone</code><br/>
+<em>
+string
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>TimeZone is the time zone in which the cron schedule will be interpreted in.
+This value is passed to time.LoadLocation, so it must be either &ldquo;Local&rdquo;, &ldquo;UTC&rdquo;,
+or a valid IANA location name e.g. &ldquo;America/New_York&rdquo;.
+Defaults to &ldquo;Local&rdquo;.</p>
 </td>
 </tr>
 <tr>
@@ -166,7 +1177,7 @@ ScheduledSparkApplicationStatus
 <h3 id="sparkoperator.k8s.io/v1beta2.SparkApplication">SparkApplication
 </h3>
 <div>
-<p>SparkApplication represents a Spark application running on and using Kubernetes as a cluster manager.</p>
+<p>SparkApplication is the Schema for the sparkapplications API</p>
 </div>
 <table>
 <thead>
@@ -197,7 +1208,7 @@ string
 <td>
 <code>metadata</code><br/>
 <em>
-<a href="https://v1-18.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#objectmeta-v1-meta">
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#objectmeta-v1-meta">
 Kubernetes meta/v1.ObjectMeta
 </a>
 </em>
@@ -220,6 +1231,37 @@ SparkApplicationSpec
 <br/>
 <br/>
 <table>
+<tr>
+<td>
+<code>managedBy</code><br/>
+<em>
+string
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>ManagedBy indicates the controller managing this SparkApplication.
+Set to &ldquo;sparkoperator.k8s.io/spark-operator&rdquo; for the built-in operator
+(default behavior when field is omitted) or &ldquo;kueue.x-k8s.io/multikueue&rdquo;
+to delegate reconciliation to MultiKueue. The field is immutable once set.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>suspend</code><br/>
+<em>
+bool
+</em>
+</td>
+<td>
+<p>Suspend indicates whether the SparkApplication should be suspended.
+When true, the controller skips submitting the Spark job.
+If a SparkApplication is suspended after creation
+(i.e. the flag goes from false to true), the Spark operator will delete
+all active Pods associated with this SparkApplication.
+Users must design their Spark application to gracefully handle this.</p>
+</td>
+</tr>
 <tr>
 <td>
 <code>type</code><br/>
@@ -254,7 +1296,8 @@ DeployMode
 </em>
 </td>
 <td>
-<p>Mode is the deployment mode of the Spark application.</p>
+<p>Mode is the deployment mode of the Spark application.
+The client mode is deprecated and will be removed in the next API version.</p>
 </td>
 </tr>
 <tr>
@@ -328,7 +1371,6 @@ string
 </em>
 </td>
 <td>
-<em>(Optional)</em>
 <p>MainFile is the path to a bundled JAR, Python, or R file of the application.</p>
 </td>
 </tr>
@@ -366,8 +1408,8 @@ map[string]string
 </td>
 <td>
 <em>(Optional)</em>
-<p>HadoopConf carries user-specified Hadoop configuration properties as they would use the  the &ldquo;&ndash;conf&rdquo; option
-in spark-submit.  The SparkApplication controller automatically adds prefix &ldquo;spark.hadoop.&rdquo; to Hadoop
+<p>HadoopConf carries user-specified Hadoop configuration properties as they would use the &ldquo;&ndash;conf&rdquo; option
+in spark-submit. The SparkApplication controller automatically adds prefix &ldquo;spark.hadoop.&rdquo; to Hadoop
 configuration properties.</p>
 </td>
 </tr>
@@ -401,7 +1443,7 @@ The controller will add environment variable HADOOP_CONF_DIR to the path where t
 <td>
 <code>volumes</code><br/>
 <em>
-<a href="https://v1-18.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#volume-v1-core">
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#volume-v1-core">
 []Kubernetes core/v1.Volume
 </a>
 </em>
@@ -601,6 +1643,20 @@ SparkUIConfiguration
 </tr>
 <tr>
 <td>
+<code>driverIngressOptions</code><br/>
+<em>
+<a href="#sparkoperator.k8s.io/v1beta2.DriverIngressConfiguration">
+[]DriverIngressConfiguration
+</a>
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>DriverIngressOptions allows configuring the Service and the Ingress to expose ports inside Spark Driver</p>
+</td>
+</tr>
+<tr>
+<td>
 <code>dynamicAllocation</code><br/>
 <em>
 <a href="#sparkoperator.k8s.io/v1beta2.DynamicAllocation">
@@ -612,6 +1668,23 @@ DynamicAllocation
 <em>(Optional)</em>
 <p>DynamicAllocation configures dynamic allocation that becomes available for the Kubernetes
 scheduler backend since Spark 3.0.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>driverPodDisruptionBudget</code><br/>
+<em>
+bool
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>DriverPodDisruptionBudget controls whether a PodDisruptionBudget is
+created for the driver pod to prevent voluntary eviction (e.g.
+kubectl drain) while the application is running. A PDB is only
+created when this field is true AND the operator was started with
+&ndash;enable-driver-pdb. When unset or false, no PDB is created. The
+field has no effect when the operator-level gate is off.</p>
 </td>
 </tr>
 </table>
@@ -700,11 +1773,17 @@ string
 <td></td>
 </tr><tr><td><p>&#34;PENDING_RERUN&#34;</p></td>
 <td></td>
+</tr><tr><td><p>&#34;RESUMING&#34;</p></td>
+<td></td>
 </tr><tr><td><p>&#34;RUNNING&#34;</p></td>
 <td></td>
 </tr><tr><td><p>&#34;SUBMITTED&#34;</p></td>
 <td></td>
 </tr><tr><td><p>&#34;SUCCEEDING&#34;</p></td>
+<td></td>
+</tr><tr><td><p>&#34;SUSPENDED&#34;</p></td>
+<td></td>
+</tr><tr><td><p>&#34;SUSPENDING&#34;</p></td>
 <td></td>
 </tr><tr><td><p>&#34;UNKNOWN&#34;</p></td>
 <td></td>
@@ -754,7 +1833,7 @@ string
 <td>
 <code>resources</code><br/>
 <em>
-<a href="https://v1-18.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#resourcelist-v1-core">
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#resourcelist-v1-core">
 Kubernetes core/v1.ResourceList
 </a>
 </em>
@@ -886,6 +1965,18 @@ dependencies provided in Packages to avoid dependency conflicts.</p>
 given with the &ldquo;packages&rdquo; option.</p>
 </td>
 </tr>
+<tr>
+<td>
+<code>archives</code><br/>
+<em>
+[]string
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>Archives is a list of archives to be extracted into the working directory of each executor.</p>
+</td>
+</tr>
 </tbody>
 </table>
 <h3 id="sparkoperator.k8s.io/v1beta2.DeployMode">DeployMode
@@ -904,11 +1995,13 @@ given with the &ldquo;packages&rdquo; option.</p>
 </tr>
 </thead>
 <tbody><tr><td><p>&#34;client&#34;</p></td>
-<td></td>
+<td><p>Deprecated: client mode will be removed in the next API version, see <a href="https://github.com/kubeflow/spark-operator/issues/3253">https://github.com/kubeflow/spark-operator/issues/3253</a>.</p>
+</td>
 </tr><tr><td><p>&#34;cluster&#34;</p></td>
 <td></td>
 </tr><tr><td><p>&#34;in-cluster-client&#34;</p></td>
-<td></td>
+<td><p>Deprecated: in-cluster-client mode will be removed in the next API version, see <a href="https://github.com/kubeflow/spark-operator/issues/3253">https://github.com/kubeflow/spark-operator/issues/3253</a>.</p>
+</td>
 </tr></tbody>
 </table>
 <h3 id="sparkoperator.k8s.io/v1beta2.DriverInfo">DriverInfo
@@ -939,9 +2032,9 @@ string
 </tr>
 <tr>
 <td>
-<code>webUIPort</code><br/>
+<code>webUIAddress</code><br/>
 <em>
-int32
+string
 </em>
 </td>
 <td>
@@ -950,9 +2043,9 @@ int32
 </tr>
 <tr>
 <td>
-<code>webUIAddress</code><br/>
+<code>webUIPort</code><br/>
 <em>
-string
+int32
 </em>
 </td>
 <td>
@@ -987,6 +2080,122 @@ string
 </em>
 </td>
 <td>
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sparkoperator.k8s.io/v1beta2.DriverIngressConfiguration">DriverIngressConfiguration
+</h3>
+<p>
+(<em>Appears on:</em><a href="#sparkoperator.k8s.io/v1beta2.SparkApplicationSpec">SparkApplicationSpec</a>)
+</p>
+<div>
+<p>DriverIngressConfiguration is for driver ingress specific configuration parameters.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<code>servicePort</code><br/>
+<em>
+int32
+</em>
+</td>
+<td>
+<p>ServicePort allows configuring the port at service level that might be different from the targetPort.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>servicePortName</code><br/>
+<em>
+string
+</em>
+</td>
+<td>
+<p>ServicePortName allows configuring the name of the service port.
+This may be useful for sidecar proxies like Envoy injected by Istio which require specific ports names to treat traffic as proper HTTP.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>serviceType</code><br/>
+<em>
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#servicetype-v1-core">
+Kubernetes core/v1.ServiceType
+</a>
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>ServiceType allows configuring the type of the service. Defaults to ClusterIP.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>serviceAnnotations</code><br/>
+<em>
+map[string]string
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>ServiceAnnotations is a map of key,value pairs of annotations that might be added to the service object.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>serviceLabels</code><br/>
+<em>
+map[string]string
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>ServiceLabels is a map of key,value pairs of labels that might be added to the service object.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>ingressURLFormat</code><br/>
+<em>
+string
+</em>
+</td>
+<td>
+<p>IngressURLFormat is the URL for the ingress.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>ingressAnnotations</code><br/>
+<em>
+map[string]string
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>IngressAnnotations is a map of key,value pairs of annotations that might be added to the ingress object. i.e. specify nginx as ingress.class</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>ingressTLS</code><br/>
+<em>
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#ingresstls-v1-networking">
+[]Kubernetes networking/v1.IngressTLS
+</a>
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>TlsHosts is useful If we need to declare SSL certificates to the ingress object</p>
 </td>
 </tr>
 </tbody>
@@ -1067,7 +2276,7 @@ GC settings or other logging.</p>
 <td>
 <code>lifecycle</code><br/>
 <em>
-<a href="https://v1-18.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#lifecycle-v1-core">
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#lifecycle-v1-core">
 Kubernetes core/v1.Lifecycle
 </a>
 </em>
@@ -1105,6 +2314,19 @@ executors to connect to the driver.</p>
 </tr>
 <tr>
 <td>
+<code>serviceLabels</code><br/>
+<em>
+map[string]string
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>ServiceLabels defines the labels to be added to the Kubernetes headless service used by
+executors to connect to the driver.</p>
+</td>
+</tr>
+<tr>
+<td>
 <code>ports</code><br/>
 <em>
 <a href="#sparkoperator.k8s.io/v1beta2.Port">
@@ -1115,6 +2337,18 @@ executors to connect to the driver.</p>
 <td>
 <em>(Optional)</em>
 <p>Ports settings for the pods, following the Kubernetes specifications.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>priorityClassName</code><br/>
+<em>
+string
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>PriorityClassName is the name of the PriorityClass for the driver pod.</p>
 </td>
 </tr>
 </tbody>
@@ -1209,6 +2443,21 @@ int32
 </tr>
 <tr>
 <td>
+<code>shuffleTrackingEnabled</code><br/>
+<em>
+bool
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>ShuffleTrackingEnabled enables shuffle file tracking for executors, which allows dynamic allocation without
+the need for an external shuffle service. This option will try to keep alive executors that are storing
+shuffle data for active jobs. If external shuffle service is enabled, set ShuffleTrackingEnabled to false.
+ShuffleTrackingEnabled is true by default if dynamicAllocation.enabled is true.</p>
+</td>
+</tr>
+<tr>
+<td>
 <code>shuffleTrackingTimeout</code><br/>
 <em>
 int64
@@ -1293,6 +2542,20 @@ GC settings or other logging.</p>
 </tr>
 <tr>
 <td>
+<code>lifecycle</code><br/>
+<em>
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#lifecycle-v1-core">
+Kubernetes core/v1.Lifecycle
+</a>
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>Lifecycle for running preStop or postStart commands</p>
+</td>
+</tr>
+<tr>
+<td>
 <code>deleteOnTermination</code><br/>
 <em>
 bool
@@ -1316,6 +2579,18 @@ Maps to <code>spark.kubernetes.executor.deleteOnTermination</code> that is avail
 <td>
 <em>(Optional)</em>
 <p>Ports settings for the pods, following the Kubernetes specifications.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>priorityClassName</code><br/>
+<em>
+string
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>PriorityClassName is the name of the PriorityClass for the executor pod.</p>
 </td>
 </tr>
 </tbody>
@@ -1793,7 +3068,11 @@ int64
 </thead>
 <tbody><tr><td><p>&#34;FailedValidation&#34;</p></td>
 <td></td>
+</tr><tr><td><p>&#34;&#34;</p></td>
+<td></td>
 </tr><tr><td><p>&#34;Scheduled&#34;</p></td>
+<td></td>
+</tr><tr><td><p>&#34;Validating&#34;</p></td>
 <td></td>
 </tr></tbody>
 </table>
@@ -1803,6 +3082,7 @@ int64
 (<em>Appears on:</em><a href="#sparkoperator.k8s.io/v1beta2.ScheduledSparkApplication">ScheduledSparkApplication</a>)
 </p>
 <div>
+<p>ScheduledSparkApplicationSpec defines the desired state of ScheduledSparkApplication.</p>
 </div>
 <table>
 <thead>
@@ -1821,6 +3101,21 @@ string
 </td>
 <td>
 <p>Schedule is a cron schedule on which the application should run.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>timeZone</code><br/>
+<em>
+string
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>TimeZone is the time zone in which the cron schedule will be interpreted in.
+This value is passed to time.LoadLocation, so it must be either &ldquo;Local&rdquo;, &ldquo;UTC&rdquo;,
+or a valid IANA location name e.g. &ldquo;America/New_York&rdquo;.
+Defaults to &ldquo;Local&rdquo;.</p>
 </td>
 </tr>
 <tr>
@@ -1896,6 +3191,7 @@ Defaults to 1.</p>
 (<em>Appears on:</em><a href="#sparkoperator.k8s.io/v1beta2.ScheduledSparkApplication">ScheduledSparkApplication</a>)
 </p>
 <div>
+<p>ScheduledSparkApplicationStatus defines the observed state of ScheduledSparkApplication.</p>
 </div>
 <table>
 <thead>
@@ -1909,7 +3205,7 @@ Defaults to 1.</p>
 <td>
 <code>lastRun</code><br/>
 <em>
-<a href="https://v1-18.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#time-v1-meta">
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#time-v1-meta">
 Kubernetes meta/v1.Time
 </a>
 </em>
@@ -1922,7 +3218,7 @@ Kubernetes meta/v1.Time
 <td>
 <code>nextRun</code><br/>
 <em>
-<a href="https://v1-18.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#time-v1-meta">
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#time-v1-meta">
 Kubernetes meta/v1.Time
 </a>
 </em>
@@ -2056,14 +3352,14 @@ SecretType
 </tr>
 </thead>
 <tbody><tr><td><p>&#34;GCPServiceAccount&#34;</p></td>
-<td><p>GCPServiceAccountSecret is for secrets from a GCP service account Json key file that needs
+<td><p>SecretTypeGCPServiceAccount is for secrets from a GCP service account Json key file that needs
 the environment variable GOOGLE_APPLICATION_CREDENTIALS.</p>
 </td>
 </tr><tr><td><p>&#34;Generic&#34;</p></td>
-<td><p>GenericType is for secrets that needs no special handling.</p>
+<td><p>SecretTypeGeneric is for secrets that needs no special handling.</p>
 </td>
 </tr><tr><td><p>&#34;HadoopDelegationToken&#34;</p></td>
-<td><p>HadoopDelegationTokenSecret is for secrets from an Hadoop delegation token that needs the
+<td><p>SecretTypeHadoopDelegationToken is for secrets from an Hadoop delegation token that needs the
 environment variable HADOOP_TOKEN_FILE_LOCATION.</p>
 </td>
 </tr></tbody>
@@ -2074,7 +3370,7 @@ environment variable HADOOP_TOKEN_FILE_LOCATION.</p>
 (<em>Appears on:</em><a href="#sparkoperator.k8s.io/v1beta2.SparkApplication">SparkApplication</a>, <a href="#sparkoperator.k8s.io/v1beta2.ScheduledSparkApplicationSpec">ScheduledSparkApplicationSpec</a>)
 </p>
 <div>
-<p>SparkApplicationSpec describes the specification of a Spark application using Kubernetes as a cluster manager.
+<p>SparkApplicationSpec defines the desired state of SparkApplication
 It carries every pieces of information a spark-submit command takes and recognizes.</p>
 </div>
 <table>
@@ -2085,6 +3381,37 @@ It carries every pieces of information a spark-submit command takes and recogniz
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<code>managedBy</code><br/>
+<em>
+string
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>ManagedBy indicates the controller managing this SparkApplication.
+Set to &ldquo;sparkoperator.k8s.io/spark-operator&rdquo; for the built-in operator
+(default behavior when field is omitted) or &ldquo;kueue.x-k8s.io/multikueue&rdquo;
+to delegate reconciliation to MultiKueue. The field is immutable once set.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>suspend</code><br/>
+<em>
+bool
+</em>
+</td>
+<td>
+<p>Suspend indicates whether the SparkApplication should be suspended.
+When true, the controller skips submitting the Spark job.
+If a SparkApplication is suspended after creation
+(i.e. the flag goes from false to true), the Spark operator will delete
+all active Pods associated with this SparkApplication.
+Users must design their Spark application to gracefully handle this.</p>
+</td>
+</tr>
 <tr>
 <td>
 <code>type</code><br/>
@@ -2119,7 +3446,8 @@ DeployMode
 </em>
 </td>
 <td>
-<p>Mode is the deployment mode of the Spark application.</p>
+<p>Mode is the deployment mode of the Spark application.
+The client mode is deprecated and will be removed in the next API version.</p>
 </td>
 </tr>
 <tr>
@@ -2193,7 +3521,6 @@ string
 </em>
 </td>
 <td>
-<em>(Optional)</em>
 <p>MainFile is the path to a bundled JAR, Python, or R file of the application.</p>
 </td>
 </tr>
@@ -2231,8 +3558,8 @@ map[string]string
 </td>
 <td>
 <em>(Optional)</em>
-<p>HadoopConf carries user-specified Hadoop configuration properties as they would use the  the &ldquo;&ndash;conf&rdquo; option
-in spark-submit.  The SparkApplication controller automatically adds prefix &ldquo;spark.hadoop.&rdquo; to Hadoop
+<p>HadoopConf carries user-specified Hadoop configuration properties as they would use the &ldquo;&ndash;conf&rdquo; option
+in spark-submit. The SparkApplication controller automatically adds prefix &ldquo;spark.hadoop.&rdquo; to Hadoop
 configuration properties.</p>
 </td>
 </tr>
@@ -2266,7 +3593,7 @@ The controller will add environment variable HADOOP_CONF_DIR to the path where t
 <td>
 <code>volumes</code><br/>
 <em>
-<a href="https://v1-18.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#volume-v1-core">
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#volume-v1-core">
 []Kubernetes core/v1.Volume
 </a>
 </em>
@@ -2466,6 +3793,20 @@ SparkUIConfiguration
 </tr>
 <tr>
 <td>
+<code>driverIngressOptions</code><br/>
+<em>
+<a href="#sparkoperator.k8s.io/v1beta2.DriverIngressConfiguration">
+[]DriverIngressConfiguration
+</a>
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>DriverIngressOptions allows configuring the Service and the Ingress to expose ports inside Spark Driver</p>
+</td>
+</tr>
+<tr>
+<td>
 <code>dynamicAllocation</code><br/>
 <em>
 <a href="#sparkoperator.k8s.io/v1beta2.DynamicAllocation">
@@ -2479,6 +3820,23 @@ DynamicAllocation
 scheduler backend since Spark 3.0.</p>
 </td>
 </tr>
+<tr>
+<td>
+<code>driverPodDisruptionBudget</code><br/>
+<em>
+bool
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>DriverPodDisruptionBudget controls whether a PodDisruptionBudget is
+created for the driver pod to prevent voluntary eviction (e.g.
+kubectl drain) while the application is running. A PDB is only
+created when this field is true AND the operator was started with
+&ndash;enable-driver-pdb. When unset or false, no PDB is created. The
+field has no effect when the operator-level gate is off.</p>
+</td>
+</tr>
 </tbody>
 </table>
 <h3 id="sparkoperator.k8s.io/v1beta2.SparkApplicationStatus">SparkApplicationStatus
@@ -2487,7 +3845,7 @@ scheduler backend since Spark 3.0.</p>
 (<em>Appears on:</em><a href="#sparkoperator.k8s.io/v1beta2.SparkApplication">SparkApplication</a>)
 </p>
 <div>
-<p>SparkApplicationStatus describes the current status of a Spark application.</p>
+<p>SparkApplicationStatus defines the observed state of SparkApplication</p>
 </div>
 <table>
 <thead>
@@ -2523,7 +3881,7 @@ string
 <td>
 <code>lastSubmissionAttemptTime</code><br/>
 <em>
-<a href="https://v1-18.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#time-v1-meta">
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#time-v1-meta">
 Kubernetes meta/v1.Time
 </a>
 </em>
@@ -2536,7 +3894,7 @@ Kubernetes meta/v1.Time
 <td>
 <code>terminationTime</code><br/>
 <em>
-<a href="https://v1-18.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#time-v1-meta">
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#time-v1-meta">
 Kubernetes meta/v1.Time
 </a>
 </em>
@@ -2576,7 +3934,7 @@ ApplicationState
 <code>executorState</code><br/>
 <em>
 <a href="#sparkoperator.k8s.io/v1beta2.ExecutorState">
-map[string]github.com/GoogleCloudPlatform/spark-on-k8s-operator/pkg/apis/sparkoperator.k8s.io/v1beta2.ExecutorState
+map[string]github.com/kubeflow/spark-operator/v2/api/v1beta2.ExecutorState
 </a>
 </em>
 </td>
@@ -2654,6 +4012,22 @@ TODO: investigate if we should use v1.PodSpec and limit what can be set instead.
 <tbody>
 <tr>
 <td>
+<code>template</code><br/>
+<em>
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#podtemplatespec-v1-core">
+Kubernetes core/v1.PodTemplateSpec
+</a>
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>Template is a pod template that can be used to define the driver or executor pod configurations that Spark configurations do not support.
+Spark version &gt;= 3.0.0 is required.
+Ref: <a href="https://spark.apache.org/docs/latest/running-on-kubernetes.html#pod-template">https://spark.apache.org/docs/latest/running-on-kubernetes.html#pod-template</a>.</p>
+</td>
+</tr>
+<tr>
+<td>
 <code>cores</code><br/>
 <em>
 int32
@@ -2686,6 +4060,18 @@ string
 <td>
 <em>(Optional)</em>
 <p>Memory is the amount of memory to request for the pod.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>memoryLimit</code><br/>
+<em>
+string
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>MemoryLimit overrides the memory limit of the pod.</p>
 </td>
 </tr>
 <tr>
@@ -2758,7 +4144,7 @@ string
 <td>
 <code>env</code><br/>
 <em>
-<a href="https://v1-18.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#envvar-v1-core">
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#envvar-v1-core">
 []Kubernetes core/v1.EnvVar
 </a>
 </em>
@@ -2785,7 +4171,7 @@ Deprecated. Consider using <code>env</code> instead.</p>
 <td>
 <code>envFrom</code><br/>
 <em>
-<a href="https://v1-18.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#envfromsource-v1-core">
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#envfromsource-v1-core">
 []Kubernetes core/v1.EnvFromSource
 </a>
 </em>
@@ -2800,7 +4186,7 @@ Deprecated. Consider using <code>env</code> instead.</p>
 <code>envSecretKeyRefs</code><br/>
 <em>
 <a href="#sparkoperator.k8s.io/v1beta2.NameKey">
-map[string]github.com/GoogleCloudPlatform/spark-on-k8s-operator/pkg/apis/sparkoperator.k8s.io/v1beta2.NameKey
+map[string]github.com/kubeflow/spark-operator/v2/api/v1beta2.NameKey
 </a>
 </em>
 </td>
@@ -2838,7 +4224,7 @@ map[string]string
 <td>
 <code>volumeMounts</code><br/>
 <em>
-<a href="https://v1-18.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#volumemount-v1-core">
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#volumemount-v1-core">
 []Kubernetes core/v1.VolumeMount
 </a>
 </em>
@@ -2852,7 +4238,7 @@ map[string]string
 <td>
 <code>affinity</code><br/>
 <em>
-<a href="https://v1-18.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#affinity-v1-core">
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#affinity-v1-core">
 Kubernetes core/v1.Affinity
 </a>
 </em>
@@ -2866,7 +4252,7 @@ Kubernetes core/v1.Affinity
 <td>
 <code>tolerations</code><br/>
 <em>
-<a href="https://v1-18.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#toleration-v1-core">
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#toleration-v1-core">
 []Kubernetes core/v1.Toleration
 </a>
 </em>
@@ -2880,7 +4266,7 @@ Kubernetes core/v1.Affinity
 <td>
 <code>podSecurityContext</code><br/>
 <em>
-<a href="https://v1-18.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#podsecuritycontext-v1-core">
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#podsecuritycontext-v1-core">
 Kubernetes core/v1.PodSecurityContext
 </a>
 </em>
@@ -2894,7 +4280,7 @@ Kubernetes core/v1.PodSecurityContext
 <td>
 <code>securityContext</code><br/>
 <em>
-<a href="https://v1-18.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#securitycontext-v1-core">
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#securitycontext-v1-core">
 Kubernetes core/v1.SecurityContext
 </a>
 </em>
@@ -2920,7 +4306,7 @@ string
 <td>
 <code>sidecars</code><br/>
 <em>
-<a href="https://v1-18.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core">
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core">
 []Kubernetes core/v1.Container
 </a>
 </em>
@@ -2934,7 +4320,7 @@ string
 <td>
 <code>initContainers</code><br/>
 <em>
-<a href="https://v1-18.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core">
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core">
 []Kubernetes core/v1.Container
 </a>
 </em>
@@ -2973,7 +4359,7 @@ This field is mutually exclusive with nodeSelector at SparkApplication level (wh
 <td>
 <code>dnsConfig</code><br/>
 <em>
-<a href="https://v1-18.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#poddnsconfig-v1-core">
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#poddnsconfig-v1-core">
 Kubernetes core/v1.PodDNSConfig
 </a>
 </em>
@@ -3011,7 +4397,7 @@ string
 <td>
 <code>hostAliases</code><br/>
 <em>
-<a href="https://v1-18.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#hostalias-v1-core">
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#hostalias-v1-core">
 []Kubernetes core/v1.HostAlias
 </a>
 </em>
@@ -3082,7 +4468,7 @@ Defaults to spark-driver-ui-port.</p>
 <td>
 <code>serviceType</code><br/>
 <em>
-<a href="https://v1-18.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#servicetype-v1-core">
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#servicetype-v1-core">
 Kubernetes core/v1.ServiceType
 </a>
 </em>
@@ -3106,6 +4492,18 @@ map[string]string
 </tr>
 <tr>
 <td>
+<code>serviceLabels</code><br/>
+<em>
+map[string]string
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>ServiceLabels is a map of key,value pairs of labels that might be added to the service object.</p>
+</td>
+</tr>
+<tr>
+<td>
 <code>ingressAnnotations</code><br/>
 <em>
 map[string]string
@@ -3120,8 +4518,8 @@ map[string]string
 <td>
 <code>ingressTLS</code><br/>
 <em>
-<a href="https://v1-18.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#ingresstls-v1beta1-extensions">
-[]Kubernetes extensions/v1beta1.IngressTLS
+<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#ingresstls-v1-networking">
+[]Kubernetes networking/v1.IngressTLS
 </a>
 </em>
 </td>
@@ -3134,5 +4532,5 @@ map[string]string
 </table>
 <hr/>
 <p><em>
-Generated with <code>https://github.com/ahmetb/gen-crd-api-reference-docs.git</code> on git commit <code>ccf856504caaeac38151b57a950d3f8a7942b9db</code>.
+Generated with <code>gen-crd-api-reference-docs</code>.
 </em></p>

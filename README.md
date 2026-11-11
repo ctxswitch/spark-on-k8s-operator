@@ -1,11 +1,82 @@
-[![Go Report Card](https://goreportcard.com/badge/github.com/GoogleCloudPlatform/spark-on-k8s-operator)](https://goreportcard.com/report/github.com/GoogleCloudPlatform/spark-on-k8s-operator)
+# Kubeflow Spark Operator
 
-**This is not an officially supported Google product.**
+[![GitHub release](https://img.shields.io/github/v/release/kubeflow/spark-operator)](https://github.com/kubeflow/spark-operator/releases)
+[![Integration Test](https://github.com/kubeflow/spark-operator/actions/workflows/integration.yaml/badge.svg)](https://github.com/kubeflow/spark-operator/actions/workflows/integration.yaml)
+[![Join Slack](https://img.shields.io/badge/Join_Slack-blue?logo=slack)](https://www.kubeflow.org/docs/about/community/#kubeflow-slack-channels)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/kubeflow/spark-operator)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/10524/badge)](https://www.bestpractices.dev/projects/10524)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fkubeflow%2Fspark-operator.svg?type=shield&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fkubeflow%2Fspark-operator?ref=badge_shield&issueType=license)
 
-## Community
+## What is Spark Operator?
 
-* Join our [Slack](https://kubernetes.slack.com/messages/CALBDHMTL) channel on [Kubernetes on Slack](https://slack.k8s.io/).
-* Check out [who is using the Kubernetes Operator for Apache Spark](docs/who-is-using.md).
+The Kubernetes Operator for Apache Spark aims to make specifying and running [Spark](https://github.com/apache/spark) applications as easy and idiomatic as running other workloads on Kubernetes. It uses
+[Kubernetes custom resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) for specifying, running, and surfacing status of Spark applications.
+
+## Quick Start
+
+For a more detailed guide, please refer to the [Getting Started guide](https://spark.kubeflow.org/en/latest/getting-started/).
+
+### Installation with Helm
+
+```bash
+# Add the Helm repository
+helm repo add --force-update spark-operator https://kubeflow.github.io/spark-operator
+
+# Install the operator into the spark-operator namespace and wait for deployments to be ready
+helm install spark-operator spark-operator/spark-operator \
+    --namespace spark-operator \
+    --create-namespace \
+    --wait
+
+# Create an example application in the default namespace
+kubectl apply -f https://raw.githubusercontent.com/kubeflow/spark-operator/refs/heads/master/examples/spark-pi.yaml
+
+# Get the status of the application
+kubectl get sparkapp spark-pi
+
+# Delete the application
+kubectl delete sparkapp spark-pi
+```
+
+### Installation with Kustomize
+
+An alternative install method is using kustomize manifests.
+For more information go to the [kustomize installation docs](docs/kustomize-installation.md).
+
+```bash
+git clone https://github.com/kubeflow/spark-operator.git && cd spark-operator
+kubectl apply -k config/default --server-side --force-conflicts
+
+# If you use kustomize to install, also install Spark application RBAC in the namespace where you will run Spark applications. 
+# The example below runs in the default namespace and uses the spark-operator-spark service account.
+kubectl -n default apply -k config/spark-rbac
+
+# Create an example application in the default namespace
+kubectl apply -f https://raw.githubusercontent.com/kubeflow/spark-operator/refs/heads/master/examples/spark-pi.yaml
+
+# Get the status of the application
+kubectl get sparkapp spark-pi
+
+# Delete the application
+kubectl delete sparkapp spark-pi
+```
+
+## Overview
+
+For a complete reference of the custom resource definitions, please refer to the [API Definition](docs/api-docs.md). For details on its design, please refer to the [Architecture](https://spark.kubeflow.org/en/latest/overview/#architecture). It requires Spark 2.3 and above that supports Kubernetes as a native scheduler backend.
+
+The Kubernetes Operator for Apache Spark currently supports the following list of features:
+
+- Supports Spark 2.3 and up.
+- Enables declarative application specification and management of applications through custom resources.
+- Automatically runs `spark-submit` on behalf of users for each `SparkApplication` eligible for submission.
+- Provides native [cron](https://en.wikipedia.org/wiki/Cron) support for running scheduled applications.
+- Supports customization of Spark pods beyond what Spark natively is able to do through the mutating admission webhook, e.g., mounting ConfigMaps and volumes, and setting pod affinity/anti-affinity.
+- Supports automatic application re-submission for updated `SparkApplication` objects with updated specification.
+- Supports automatic application restart with a configurable restart policy.
+- Supports automatic retries of failed submissions with optional linear back-off.
+- Supports collecting and exporting application-level metrics and driver/executor metrics to Prometheus.
 
 ## Project Status
 
@@ -13,83 +84,66 @@
 
 **Current API version:** *`v1beta2`*
 
-**If you are currently using the `v1beta1` version of the APIs in your manifests, please update them to use the `v1beta2` version by changing `apiVersion: "sparkoperator.k8s.io/<version>"` to `apiVersion: "sparkoperator.k8s.io/v1beta2"`. You will also need to delete the `previous` version of the CustomResourceDefinitions named `sparkapplications.sparkoperator.k8s.io` and `scheduledsparkapplications.sparkoperator.k8s.io`, and replace them with the `v1beta2` version either by installing the latest version of the operator or by running `kubectl create -f manifest/crds`.**
-
-Customization of Spark pods, e.g., mounting arbitrary volumes and setting pod affinity, is implemented using a Kubernetes [Mutating Admission Webhook](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/), which became beta in Kubernetes 1.9. The mutating admission webhook is disabled by default if you install the operator using the Helm [chart](charts/spark-operator-chart). Check out the [Quick Start Guide](docs/quick-start-guide.md#using-the-mutating-admission-webhook) on how to enable the webhook.
+**If you are currently using the `v1beta1` version of the APIs in your manifests, please update them to use the `v1beta2` version by changing `apiVersion: "sparkoperator.k8s.io/<version>"` to `apiVersion: "sparkoperator.k8s.io/v1beta2"`. You will also need to delete the `previous` version of the CustomResourceDefinitions named `sparkapplications.sparkoperator.k8s.io` and `scheduledsparkapplications.sparkoperator.k8s.io`, and replace them with the `v1beta2` version either by installing the latest version of the operator or by running `kubectl create -f config/crd/bases`.**
 
 ## Prerequisites
 
-* Version >= 1.13 of Kubernetes to use the [`subresource` support for CustomResourceDefinitions](https://kubernetes.io/docs/tasks/access-kubernetes-api/custom-resources/custom-resource-definitions/#subresources), which became beta in 1.13 and is enabled by default in 1.13 and higher.
+- [Kubernetes](https://kubernetes.io) >= 1.16
+- [Helm](https://helm.sh) >= 3
+- [kubectl](https://kubernetes.io/docs/reference/kubectl) >= 1.16
 
-* Version >= 1.16 of Kubernetes to use the `MutatingWebhook` and `ValidatingWebhook` of `apiVersion: admissionregistration.k8s.io/v1`.
+## Getting Started
 
-## Installation
+For getting started with Spark operator, please refer to [Getting Started](https://spark.kubeflow.org/en/latest/getting-started/).
 
-The easiest way to install the Kubernetes Operator for Apache Spark is to use the Helm [chart](charts/spark-operator-chart/).
+## User Guide
 
-```bash
-$ helm repo add spark-operator https://googlecloudplatform.github.io/spark-on-k8s-operator
+For detailed user guide and API documentation, please refer to [User Guide](https://spark.kubeflow.org/en/latest/user-guide/) and [API Specification](docs/api-docs.md).
 
-$ helm install my-release spark-operator/spark-operator --namespace spark-operator --create-namespace
-```
+If you plan to run Spark workloads with Spark operator on [Alibaba Cloud Container Service for Kubernetes (ACK)](https://www.alibabacloud.com/product/kubernetes), also refer to the [ACK guide](https://www.alibabacloud.com/help/ack/ack-managed-and-ack-dedicated/use-cases/run-apache-spark-workloads-on-ack) for optimized configuration practices.
 
-This will install the Kubernetes Operator for Apache Spark into the namespace `spark-operator`. The operator by default watches and handles `SparkApplication`s in every namespaces. If you would like to limit the operator to watch and handle `SparkApplication`s in a single namespace, e.g., `default` instead, add the following option to the `helm install` command:
+If you are running Spark operator on Google Kubernetes Engine (GKE) and want to use Google Cloud Storage (GCS) and/or BigQuery for reading/writing data, also refer to the [GCP guide](https://spark.kubeflow.org/en/latest/user-guide/gcp.html).
 
-```
---set sparkJobNamespace=default
-```
+## Blog Posts
 
-For configuration options available in the Helm chart, please refer to the chart's [README](charts/spark-operator-chart/README.md).
+- [[2025-03] Announcing the Kubeflow Spark Operator Benchmarking Results](https://blog.kubeflow.org/operators/benchmarking/performance/2025/03/15/kubeflow-spark-operator-benchmarks.html)
+- [[2024-04] Announcing the Kubeflow Spark Operator: Building a Stronger Spark on Kubernetes Community](https://blog.kubeflow.org/operators/2024/04/15/kubeflow-spark-operator.html)
 
 ## Version Matrix
 
 The following table lists the most recent few versions of the operator.
 
-| Operator Version | API Version | Kubernetes Version | Base Spark Version | Operator Image Tag |
-| ------------- | ------------- | ------------- | ------------- | ------------- |
-| `latest` (master HEAD) | `v1beta2` | 1.13+ | `3.0.0` | `latest` |
-| `v1beta2-1.3.0-3.1.1` | `v1beta2` | 1.16+ | `3.1.1` | `v1beta2-1.3.0-3.1.1` |
-| `v1beta2-1.2.3-3.1.1` | `v1beta2` | 1.13+ | `3.1.1` | `v1beta2-1.2.3-3.1.1` |
-| `v1beta2-1.2.0-3.0.0` | `v1beta2` | 1.13+ | `3.0.0` | `v1beta2-1.2.0-3.0.0` |
-| `v1beta2-1.1.2-2.4.5` | `v1beta2` | 1.13+ | `2.4.5` | `v1beta2-1.1.2-2.4.5` |
-| `v1beta2-1.0.1-2.4.4` | `v1beta2` | 1.13+ | `2.4.4` | `v1beta2-1.0.1-2.4.4` |
-| `v1beta2-1.0.0-2.4.4` | `v1beta2` | 1.13+ | `2.4.4` | `v1beta2-1.0.0-2.4.4` |
-| `v1beta1-0.9.0` | `v1beta1` | 1.13+ | `2.4.0` | `v2.4.0-v1beta1-0.9.0` |
+| Operator Version      | API Version | Kubernetes Version | Base Spark Version |
+| --------------------- | ----------- | ------------------ | ------------------ |
+| `v2.3.x`              | `v1beta2`   | 1.16+              | `4.0.0`            |
+| `v2.2.x`              | `v1beta2`   | 1.16+              | `3.5.5`            |
+| `v2.1.x`              | `v1beta2`   | 1.16+              | `3.5.3`            |
+| `v2.0.x`              | `v1beta2`   | 1.16+              | `3.5.2`            |
+| `v1beta2-1.6.x-3.5.0` | `v1beta2`   | 1.16+              | `3.5.0`            |
+| `v1beta2-1.5.x-3.5.0` | `v1beta2`   | 1.16+              | `3.5.0`            |
+| `v1beta2-1.4.x-3.5.0` | `v1beta2`   | 1.16+              | `3.5.0`            |
+| `v1beta2-1.3.x-3.1.1` | `v1beta2`   | 1.16+              | `3.1.1`            |
+| `v1beta2-1.2.3-3.1.1` | `v1beta2`   | 1.13+              | `3.1.1`            |
+| `v1beta2-1.2.2-3.0.0` | `v1beta2`   | 1.13+              | `3.0.0`            |
+| `v1beta2-1.2.1-3.0.0` | `v1beta2`   | 1.13+              | `3.0.0`            |
+| `v1beta2-1.2.0-3.0.0` | `v1beta2`   | 1.13+              | `3.0.0`            |
+| `v1beta2-1.1.x-2.4.5` | `v1beta2`   | 1.13+              | `2.4.5`            |
+| `v1beta2-1.0.x-2.4.4` | `v1beta2`   | 1.13+              | `2.4.4`            |
 
-When installing using the Helm chart, you can choose to use a specific image tag instead of the default one, using the following option:
+## Developer Guide
 
-```
---set image.tag=<operator image tag>
-```
+For developing with Spark Operator, please refer to [Developer Guide](https://spark.kubeflow.org/en/latest/contributor-guide/).
 
-## Get Started
+## Contributor Guide
 
-Get started quickly with the Kubernetes Operator for Apache Spark using the [Quick Start Guide](docs/quick-start-guide.md).
+For contributing to Spark Operator, please refer to [Contributor Guide](CONTRIBUTING.md).
 
-If you are running the Kubernetes Operator for Apache Spark on Google Kubernetes Engine and want to use Google Cloud Storage (GCS) and/or BigQuery for reading/writing data, also refer to the [GCP guide](docs/gcp.md).
+## Community
 
-For more information, check the [Design](docs/design.md), [API Specification](docs/api-docs.md) and detailed [User Guide](docs/user-guide.md).
+- Join the [CNCF Slack Channel](https://www.kubeflow.org/docs/about/community/#kubeflow-slack-channels) and then join `#kubeflow-spark-on-kubernetes` Channel.
+- Check out our blog post [Announcing the Kubeflow Spark Operator: Building a Stronger Spark on Kubernetes Community](https://blog.kubeflow.org/operators/2024/04/15/kubeflow-spark-operator.html).
+- Join our monthly community meeting [Kubeflow Spark Operator Meeting Notes](https://bit.ly/3VGzP4n).
 
-## Overview
+## Adopters
 
-The Kubernetes Operator for Apache Spark aims to make specifying and running [Spark](https://github.com/apache/spark) applications as easy and idiomatic as running other workloads on Kubernetes. It uses
-[Kubernetes custom resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)
-for specifying, running, and surfacing status of Spark applications. For a complete reference of the custom resource definitions, please refer to the [API Definition](docs/api-docs.md). For details on its design, please refer to the [design doc](docs/design.md). It requires Spark 2.3 and above that supports Kubernetes as a native scheduler backend.
-
-The Kubernetes Operator for Apache Spark currently supports the following list of features:
-
-* Supports Spark 2.3 and up.
-* Enables declarative application specification and management of applications through custom resources.
-* Automatically runs `spark-submit` on behalf of users for each `SparkApplication` eligible for submission.
-* Provides native [cron](https://en.wikipedia.org/wiki/Cron) support for running scheduled applications.
-* Supports customization of Spark pods beyond what Spark natively is able to do through the mutating admission webhook, e.g., mounting ConfigMaps and volumes, and setting pod affinity/anti-affinity.
-* Supports automatic application re-submission for updated `SparkApplication` objects with updated specification.
-* Supports automatic application restart with a configurable restart policy.
-* Supports automatic retries of failed submissions with optional linear back-off.
-* Supports mounting local Hadoop configuration as a Kubernetes ConfigMap automatically via `sparkctl`.
-* Supports automatically staging local application dependencies to Google Cloud Storage (GCS) via `sparkctl`.
-* Supports collecting and exporting application-level metrics and driver/executor metrics to Prometheus.
-
-## Contributing
-
-Please check [CONTRIBUTING.md](CONTRIBUTING.md) and the [Developer Guide](docs/developer-guide.md) out.
+Check out [adopters of Spark Operator](ADOPTERS.md).

@@ -1,0 +1,64 @@
+# Copyright The Kubeflow Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: spark-operator-webhook
+  labels:
+    app.kubernetes.io/name: spark-operator
+    app.kubernetes.io/instance: spark-operator
+    app.kubernetes.io/component: webhook
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - resourcequotas
+    verbs:
+      - list
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - admissionregistration.k8s.io
+    resources:
+      - mutatingwebhookconfigurations
+      - validatingwebhookconfigurations
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - admissionregistration.k8s.io
+    resources:
+      - mutatingwebhookconfigurations
+      - validatingwebhookconfigurations
+    resourceNames:
+      - mutating-webhook-configuration
+      - validating-webhook-configuration
+    verbs:
+      - get
+      - update
+  - apiGroups:
+      - sparkoperator.k8s.io
+    resources:
+      - sparkapplications
+      - scheduledsparkapplications
+    verbs:
+      - get
+      - list
+      - watch

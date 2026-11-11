@@ -17,45 +17,141 @@ limitations under the License.
 package util
 
 import (
-	"hash"
-	"hash/fnv"
-	"reflect"
+	"errors"
+	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
 
-	apiv1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"golang.org/x/mod/semver"
+	"k8s.io/klog/v2"
+	"sigs.k8s.io/controller-runtime/pkg/reconcile"
+	"sigs.k8s.io/yaml"
 
-	"github.com/GoogleCloudPlatform/spark-on-k8s-operator/pkg/apis/sparkoperator.k8s.io/v1beta2"
-	"github.com/GoogleCloudPlatform/spark-on-k8s-operator/pkg/config"
+	"github.com/go-logr/logr"
+	"github.com/kubeflow/spark-operator/v2/pkg/common"
 )
 
-// NewHash32 returns a 32-bit hash computed from the given byte slice.
-func NewHash32() hash.Hash32 {
-	return fnv.New32()
+var unitMap = map[string]string{
+	"k":  "Ki",
+	"kb": "Ki",
+	"m":  "Mi",
+	"mb": "Mi",
+	"g":  "Gi",
+	"gb": "Gi",
+	"t":  "Ti",
+	"tb": "Ti",
+	"p":  "Pi",
+	"pb": "Pi",
 }
 
-// GetOwnerReference returns an OwnerReference pointing to the given app.
-func GetOwnerReference(app *v1beta2.SparkApplication) metav1.OwnerReference {
-	controller := true
-	return metav1.OwnerReference{
-		APIVersion: v1beta2.SchemeGroupVersion.String(),
-		Kind:       reflect.TypeOf(v1beta2.SparkApplication{}).Name(),
-		Name:       app.Name,
-		UID:        app.UID,
-		Controller: &controller,
+func GetMasterURL() (string, error) {
+	kubernetesServiceHost := os.Getenv(common.EnvKubernetesServiceHost)
+	if kubernetesServiceHost == "" {
+		return "", fmt.Errorf("environment variable %s is not found", common.EnvKubernetesServiceHost)
+	}
+
+	kubernetesServicePort := os.Getenv(common.EnvKubernetesServicePort)
+	if kubernetesServicePort == "" {
+		return "", fmt.Errorf("environment variable %s is not found", common.EnvKubernetesServicePort)
+	}
+	// check if the host is IPv6 address
+	if strings.Contains(kubernetesServiceHost, ":") && !strings.HasPrefix(kubernetesServiceHost, "[") {
+		return fmt.Sprintf("k8s://https://[%s]:%s", kubernetesServiceHost, kubernetesServicePort), nil
+	}
+	return fmt.Sprintf("k8s://https://%s:%s", kubernetesServiceHost, kubernetesServicePort), nil
+}
+
+// RemoveString removes a given string from a slice, if present
+func RemoveString(slice []string, s string) (result []string) {
+	for _, item := range slice {
+		if item != s {
+			result = append(result, item)
+		}
+	}
+	return result
+}
+
+// CompareSemanticVersion compares two semantic versions.
+func CompareSemanticVersion(v1, v2 string) int {
+	// Add 'v' prefix if needed
+	addPrefix := func(s string) string {
+		if !strings.HasPrefix(s, "v") {
+			return "v" + s
+		}
+		return s
+	}
+	return semver.Compare(addPrefix(v1), addPrefix(v2))
+}
+
+// WriteObjectToFile marshals the given object into a YAML document and writes it to the given file.
+func WriteObjectToFile(obj interface{}, filePath string) (err error) {
+	err = os.MkdirAll(filepath.Dir(filePath), 0755)
+	if err != nil {
+		return err
+	}
+
+	file, err := os.Create(filePath)
+	if err != nil {
+		return err
+	}
+	defer func(file *os.File) {
+		fileErr := file.Close()
+		if fileErr != nil {
+			err = errors.Join(err, fileErr)
+		}
+	}(file)
+
+	data, err := yaml.Marshal(obj)
+	if err != nil {
+		return err
+	}
+
+	_, err = file.Write(data)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func ConvertJavaMemoryStringToK8sMemoryString(memory string) string {
+	lower := strings.ToLower(strings.TrimSpace(memory))
+
+	for unit, k8sUnit := range unitMap {
+		if strings.HasSuffix(lower, unit) {
+			return strings.TrimSuffix(lower, unit) + k8sUnit
+		}
+	}
+
+	// return trimmed memory value if no conversion is needed
+	return strings.TrimSpace(memory)
+}
+
+func SetIfNotExists[K comparable, V any](m map[K]V, key K, value V) {
+	if m == nil {
+		return
+	}
+
+	if _, ok := m[key]; !ok {
+		m[key] = value
 	}
 }
 
-// IsLaunchedBySparkOperator returns whether the given pod is launched by the Spark Operator.
-func IsLaunchedBySparkOperator(pod *apiv1.Pod) bool {
-	return pod.Labels[config.LaunchedBySparkOperatorLabel] == "true"
-}
+// NewLogConstructor returns a log constructor for the given kind.
+func NewLogConstructor(logger logr.Logger, kind string) func(*reconcile.Request) logr.Logger {
+	// Use the lowercase of kind as controller name, as it will show up in the metrics,
+	// and thus should be a prometheus compatible name(underscores and alphanumeric characters only).
+	name := strings.ToLower(kind)
 
-// IsDriverPod returns whether the given pod is a Spark driver Pod.
-func IsDriverPod(pod *apiv1.Pod) bool {
-	return pod.Labels[config.SparkRoleLabel] == config.SparkDriverRole
-}
+	// Use a custom log constructor.
+	logConstructor := func(req *reconcile.Request) logr.Logger {
+		logger := logger.WithValues("controller", name)
+		if req != nil {
+			logger = logger.WithValues(kind, klog.KRef(req.Namespace, req.Name))
+		}
+		return logger
+	}
 
-// IsExecutorPod returns whether the given pod is a Spark executor Pod.
-func IsExecutorPod(pod *apiv1.Pod) bool {
-	return pod.Labels[config.SparkRoleLabel] == config.SparkExecutorRole
+	return logConstructor
 }

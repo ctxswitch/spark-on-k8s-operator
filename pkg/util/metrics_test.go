@@ -1,11 +1,11 @@
 /*
-Copyright 2018 Google LLC
+Copyright The Kubeflow Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    https://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,55 +14,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package util
+package util_test
 
 import (
-	"sync"
-	"testing"
-
-	"github.com/stretchr/testify/assert"
+	"github.com/kubeflow/spark-operator/v2/pkg/util"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 )
 
-func TestPositiveGauge_EmptyLabels(t *testing.T) {
-	gauge := NewPositiveGauge("testGauge", "test-description", []string{})
-	emptyMap := map[string]string{}
-	gauge.Dec(emptyMap)
-	assert.Equal(t, fetchGaugeValue(gauge.gaugeMetric, emptyMap), float64(0))
-
-	gauge.Inc(emptyMap)
-	assert.Equal(t, fetchGaugeValue(gauge.gaugeMetric, emptyMap), float64(1))
-	gauge.Dec(map[string]string{})
-	assert.Equal(t, fetchGaugeValue(gauge.gaugeMetric, emptyMap), float64(0))
-}
-
-func TestPositiveGauge_WithLabels(t *testing.T) {
-	gauge := NewPositiveGauge("testGauge1", "test-description-1", []string{"app_id"})
-	app1 := map[string]string{"app_id": "test1"}
-	app2 := map[string]string{"app_id": "test2"}
-
-	var wg sync.WaitGroup
-	wg.Add(2)
-	go func() {
-		for i := 0; i < 10; i++ {
-			gauge.Inc(app1)
-		}
-		for i := 0; i < 5; i++ {
-			gauge.Dec(app1)
-		}
-		wg.Done()
-	}()
-	go func() {
-		for i := 0; i < 5; i++ {
-			gauge.Inc(app2)
-		}
-		for i := 0; i < 10; i++ {
-			gauge.Dec(app2)
-		}
-		wg.Done()
-	}()
-
-	wg.Wait()
-	assert.Equal(t, float64(5), fetchGaugeValue(gauge.gaugeMetric, app1))
-	// Always Positive Gauge.
-	assert.Equal(t, float64(0), fetchGaugeValue(gauge.gaugeMetric, app2))
-}
+var _ = Describe("CreateValidMetricNameLabel", func() {
+	DescribeTable("sanitizes prefix+name",
+		func(prefix, name, expected string) {
+			Expect(util.CreateValidMetricNameLabel(prefix, name)).To(Equal(expected))
+		},
+		Entry("replaces dashes in prefix and name", "spark-app-", "my-job", "spark_app_my_job"),
+		Entry("leaves dash-free input unchanged", "spark_app_", "myjob", "spark_app_myjob"),
+		Entry("empty prefix is the operator default", "", "spark-app-count", "spark_app_count"),
+		Entry("both empty", "", "", ""),
+		Entry("consecutive dashes", "", "a--b", "a__b"),
+	)
+})

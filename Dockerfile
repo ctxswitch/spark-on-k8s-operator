@@ -14,34 +14,65 @@
 # limitations under the License.
 #
 
-ARG SPARK_IMAGE=gcr.io/spark-operator/spark:v3.1.1
+ARG SPARK_IMAGE=docker.io/apache/spark:4.2.1-scala2.13-java21-ubuntu@sha256:ce1d0c8407066ed44b91f699b6edd3564f143722e3ef95e19d99a67b5754b306
 
-FROM golang:1.15.2-alpine as builder
+FROM docker.io/library/golang:1.25.11@sha256:00feed335fe561979f2cdcc30a5191231977c5631fe79c40f7d3ab63b4fa222f AS builder
 
 WORKDIR /workspace
 
-# Copy the Go Modules manifests
-COPY go.mod go.mod
-COPY go.sum go.sum
-# Cache deps before building and copying source so that we don't need to re-download as much
-# and so that source changes don't invalidate our downloaded layer
-RUN go mod download
+RUN --mount=type=cache,target=/go/pkg/mod/ \
+    --mount=type=bind,source=go.mod,target=go.mod \
+    --mount=type=bind,source=go.sum,target=go.sum \
+    go mod download
 
-# Copy the go source code
-COPY main.go main.go
-COPY pkg/ pkg/
+COPY . .
 
-# Build
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -o /usr/bin/spark-operator main.go
+ENV GOCACHE=/root/.cache/go-build
+
+ARG TARGETARCH
+
+# Build metadata. When unset, the Makefile derives these from the git tree
+# inside the build context, preserving the behaviour of a plain `docker build`.
+ARG VERSION=
+ARG GIT_COMMIT=
+ARG GIT_TREE_STATE=
+ARG SOURCE_DATE_EPOCH=
+
+RUN --mount=type=cache,target=/go/pkg/mod/ \
+    --mount=type=cache,target="/root/.cache/go-build" \
+    CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} GO111MODULE=on \
+    make build-operator \
+      ${VERSION:+VERSION=$VERSION} \
+      ${GIT_COMMIT:+GIT_COMMIT=$GIT_COMMIT} \
+      ${GIT_TREE_STATE:+GIT_TREE_STATE=$GIT_TREE_STATE} \
+      ${SOURCE_DATE_EPOCH:+SOURCE_DATE_EPOCH=$SOURCE_DATE_EPOCH}
+
+# Export-only stage. `docker build` targets the final stage by default, so this
+# is never built unless requested via --target=artifacts. CI uses it to extract
+# the exact binary that ships in the image.
+FROM scratch AS artifacts
+COPY --from=builder /workspace/bin/spark-operator /spark-operator
 
 FROM ${SPARK_IMAGE}
+
+ARG SPARK_UID=185
+
+ARG SPARK_GID=185
+
 USER root
-COPY --from=builder /usr/bin/spark-operator /usr/bin/
-RUN apt-get update --allow-releaseinfo-change \
-    && apt-get update \
-    && apt-get install -y openssl curl tini \
+
+RUN apt-get update \
+    && apt-get install -y catatonit \
     && rm -rf /var/lib/apt/lists/*
-COPY hack/gencerts.sh /usr/bin/
+
+RUN mkdir -p /etc/k8s-webhook-server/serving-certs /home/spark && \
+    chmod -R g+rw /etc/k8s-webhook-server/serving-certs && \
+    chown -R spark /etc/k8s-webhook-server/serving-certs /home/spark
+
+USER ${SPARK_UID}:${SPARK_GID}
+
+COPY --from=builder /workspace/bin/spark-operator /usr/bin/spark-operator
 
 COPY entrypoint.sh /usr/bin/
+
 ENTRYPOINT ["/usr/bin/entrypoint.sh"]

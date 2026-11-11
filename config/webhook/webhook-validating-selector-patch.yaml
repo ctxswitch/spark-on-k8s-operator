@@ -1,0 +1,48 @@
+# Copyright The Kubeflow Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Kustomize strategic-merge patch for ValidatingWebhookConfiguration selectors.
+#
+# controller-gen cannot emit namespaceSelector via kubebuilder markers, so we
+# add it here to align with the Helm chart defaults.
+#
+# namespaceSelector limits interception to the listed job namespaces
+# (default: "default"). Adjust the values list to match your deployment.
+
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: validating-webhook-configuration
+webhooks:
+- name: validate-sparkapplication.sparkoperator.k8s.io
+  namespaceSelector:
+    matchExpressions:
+    - key: kubernetes.io/metadata.name
+      operator: In
+      values:
+      - default
+- name: validate-scheduledsparkapplication.sparkoperator.k8s.io
+  namespaceSelector:
+    matchExpressions:
+    - key: kubernetes.io/metadata.name
+      operator: In
+      values:
+      - default
+- name: validate-sparkconnect.sparkoperator.k8s.io
+  namespaceSelector:
+    matchExpressions:
+    - key: kubernetes.io/metadata.name
+      operator: In
+      values:
+      - default

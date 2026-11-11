@@ -1,0 +1,35 @@
+# Copyright The Kubeflow Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Opt-in overlay that enables the driver PodDisruptionBudget feature.
+#
+# Usage:
+#   kustomize build config/overlays/driver-pdb/ | kubectl apply --server-side -f -
+#
+# It builds on config/default and appends --enable-driver-pdb=true to the
+# controller container args. The flag defaults to false in the binary, so this
+# overlay is the supported way to turn the feature on for kustomize-based
+# deployments.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../default
+
+patches:
+  - path: enable-driver-pdb-patch.yaml
+    target:
+      kind: Deployment
+      name: spark-operator-controller
